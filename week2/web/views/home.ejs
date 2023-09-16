@@ -6,9 +6,15 @@
                     <input class="form-control" name="query" value="자바">
                     <button class="btn btn-primary">검색</button>
                 </div>
-            </div>
+            </form>
         </div>
         <div id="div_books" class="row"></div>
+
+        <div class="text-center">
+            <button class="btn btn-primary" id="prev">이전</button>
+            <span id="span_page"></span>
+            <button class="btn btn-primary" id="next">다음</button>
+        </div>
     </div>
 </div>
 <script type="x-handlebars-template" id="temp_books">
@@ -29,21 +35,40 @@
 
 <script>
     let query=$(frm.query).val();
+    let page = 1;
     $(frm).on("submit", function(e) {
         e.preventDefault();
+        page = 1;
         query=$(frm.query).val();
         getBooks();
     })
+
+    $("#next").on("click", function(){
+        page++;
+        getBooks();
+    })
+
+    $("#prev").on("click", function(){
+        page--;
+        getBooks();
+    })
+
     function getBooks(){
         $.ajax({
             type: "get",
             url: "https://dapi.kakao.com/v3/search/book",
             headers: {"Authorization": "KakaoAK e3e46827f9bf192337a7b50ccc7835a0"},
-            data: {query: query, page: 1, size: 6},
+            data: {query: query, page: page, size: 6},
             success: function(result) {
                 console.log(result);
                 let temp = Handlebars.compile($("#temp_books").html());
                 $("#div_books").html(temp(result));
+                let last = Math.ceil(result.meta.pageable_count/6);
+                $("#span_page").html(page + "/" + last);
+                if (page == 1) $("#prev").attr("disabled", true);
+                else $("#prev").attr("disabled", false);
+                if (result.meta.is_end) $("#next").attr("disabled", true);
+                else $("#next").attr("disabled", false);
             }
         })
     }
