@@ -1,7 +1,50 @@
 <div class="row my-5">
     <div class="col">
-        <h1 class="text-center">
-            홈페이지입니다.
-        </h1>
+        <div class="row mb-2 justify-content-end">
+            <form class="col-6 col-md-4 col-lg-3" name="frm">
+                <div class="input-group">
+                    <input class="form-control" name="query" value="자바">
+                    <button class="btn btn-primary">검색</button>
+                </div>
+            </div>
+        </div>
+        <div id="div_books" class="row"></div>
     </div>
 </div>
+<script type="x-handlebars-template" id="temp_books">
+    {{#each documents}}
+        <div class="col-6 col-md-4 col-lg-2 mb-2">
+            <div class="card">
+                <div class="card-body">
+                    <img src="{{thumbnail}}">
+                    <div class="ellipsis">{{title}}</div>
+                </div>
+                <div class="card-footer">
+                    {{price}}
+                </div>
+            </div>
+        </div>
+    {{/each}}
+</script>
+
+<script>
+    let query=$(frm.query).val();
+    $(frm).on("submit", function(e) {
+        e.preventDefault();
+        query=$(frm.query).val();
+        getBooks();
+    })
+    function getBooks(){
+        $.ajax({
+            type: "get",
+            url: "https://dapi.kakao.com/v3/search/book",
+            headers: {"Authorization": "KakaoAK e3e46827f9bf192337a7b50ccc7835a0"},
+            data: {query: query, page: 1, size: 6},
+            success: function(result) {
+                console.log(result);
+                let temp = Handlebars.compile($("#temp_books").html());
+                $("#div_books").html(temp(result));
+            }
+        })
+    }
+</script>
