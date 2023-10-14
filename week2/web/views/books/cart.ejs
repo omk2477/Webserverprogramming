@@ -1,0 +1,45 @@
+<div class="row my-5">
+    <div class="col">
+        <h1 class="text-center">장바구니</h1>
+        <div id="div_cart"></div>
+    </div>
+</div>
+
+<script id="temp_cart" type="x-handlebar-template">
+    <table class="table">
+        {{#each .}}
+        <tr>
+            <td>{{title}}</td>
+            <td>{{authors}}</td>
+            <td>{{price}}</td>
+            <td>{{publisher}}</td>
+            <td><button class="btn btn-danger btn-sm" isbn="{{ isbn }}">삭제</button></td>
+        </tr>
+    {{/each}}
+    </table>
+</script>
+
+<script type="module">
+
+    import { app } from '/javascripts/firebaseInit.js';
+    import { getDatabase, ref, onValue, remove } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-database.js";
+    const db=getDatabase(app);
+
+    const ref_book=ref(db, `cart/${sessionStorage.getItem('uid')}`);
+    onValue(ref_book, snapshot=>{
+        let rows=[];
+        snapshot.forEach(row => {
+            rows.push(row.val());
+        });
+        const temp=Handlebars.compile($("#temp_cart").html());
+        $("#div_cart").html(temp(rows));
+    });
+
+    // 삭제 버튼을 누른 경우
+    $("#div_cart").on("click", ".btn", function() {
+        const isbn=$(this).attr("isbn");
+        if(!confirm(`${isbn} 도서를 삭제하실래요?`)) return;
+        const ref_book=ref(db, `cart/${sessionStorage.getItem("uid")}/${isbn}`);
+        remove(ref_book);
+    });
+</script>
