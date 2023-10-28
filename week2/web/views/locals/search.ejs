@@ -26,18 +26,58 @@
         <tr>
             <td>{{place_name}}</td>
             <td>{{address_name}}</td>
+            <td>{{phone}}</td>
+            <td><button class="btn btn-primary btn-sm" local="{{toString @this}}">즐겨찾기</button></td>
         </tr>
         {{/each}}
     </table>
 </script>
 
 <script>
+    Handlebars.registerHelper("toString", function(local){
+        return JSON.stringify(local);
+    });
+</script>
+
+<script type="module">
+
+    import { app } from '/javascripts/firebaseInit.js';
+    import { getDatabase, ref, set, get } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-database.js";
+    const db=getDatabase(app);
+
     let page = 1;
     let query = $(frm.query).val();
 
     $(frm).on("submit", function(e){
         e.preventDefault();
+        query=$(frm.query).val();
+        if(query=="") {
+            alert("검색 내용을 입력하세요!");
+            $(frm.query).focus();
+        }else{
+            page=1;
+            getLocals();
+        }
     });
+
+    //즐겨찾기 버튼을 누른 경우
+    $("#div_locals").on("click", ".btn-sm", async function(){
+        if (!sessionStorage.getItem("email")){
+            sessionStorage.setItem("target", "/locals");
+            location.href="/users/login"
+        } else {
+            const local=JSON.parse($(this).attr("local"));
+            console.log(local);
+            const ref_local=`favorite/${sessionStorage.getItem("uid")}/${local.id}`;
+            const snapshot=await get(ref(db, ref_local));
+            console.log(snapshot.val())
+            if (snapshot.val()){
+                alert("이미 등록되었습니다.");
+            } else {
+                set(ref(db, ref_local), local);
+            }
+        }
+    })
 
     $("#next").on("click", function(){
         page++;
@@ -61,11 +101,11 @@
                 let temp=Handlebars.compile($("#temp_locals").html());
                 $("#div_locals").html(temp(data));
 
-                let last = Math.ceil(result.meta.pageable_count/5);
+                let last = Math.ceil(data.meta.pageable_count/5);
                 $("#span_page").html(page + "/" + last);
                 if (page == 1) $("#prev").attr("disabled", true);
                 else $("#prev").attr("disabled", false);
-                if (result.meta.is_end) $("#next").attr("disabled", true);
+                if (data.meta.is_end) $("#next").attr("disabled", true);
                 else $("#next").attr("disabled", false);
             }
         })
