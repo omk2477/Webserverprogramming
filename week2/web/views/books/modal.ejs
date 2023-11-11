@@ -9,18 +9,20 @@
         <div class="modal-body">
           <div class="row">
             <div class="col-4">
-              <img src="{{chkImage thumbnail}}">
+                <img src="{{chkImage thumbnail}}" width="90%">
             </div>
             <div class="col-8">
-              <h5>{{title}}</h5>
-              <hr>
-              <div class="my-2">저자: {{authors}}</div>
-              <div class="my-2">가격: {{fmtPrice price}}</div>
-              <div class="my-2">출판사: {{publisher}}</div>
-              <div class="my-2">출판일: {{datetime}}</div>
+                <h5>{{title}}</h5>
+                <hr>
+                <div class="my-3">저자 : {{authors}}</div>
+                <div class="my-3">가격 : {{fmtPrice price}}</div>
+                <div class="my-3">출판사 : {{publisher}}</div>
+                <div class="my-3">출판일 : {{datetime}}</div>
+                <div class="my-3">ISBN : {{isbn}}</div>
             </div>
-            <div class="my-2">ISBN: {{contents}}</div>
           </div>
+          <hr>
+          <div>{{contents}}</div>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>

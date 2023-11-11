@@ -6,19 +6,19 @@ router.get('/', function(req, res, next) {
   res.send('respond with a resource');
 });
 
-// 로그인 페이지
+// LOGIN
 router.get('/login', function(req, res, next) {
-  res.render('index', { title: 'login', pageName: 'users/login.ejs' });
+  res.render('index', { title: 'LOGIN', pageName: 'users/login.ejs'});
 });
 
-// 회원가입 페이지
+// JOIN
 router.get('/join', function(req, res, next) {
-  res.render('index', { title: '회원가입', pageName: 'users/join.ejs' });
+  res.render('index', { title: '회원가입', pageName: 'users/join.ejs'});
 });
 
-// 마이 페이지
+// Mypage
 router.get('/mypage', function(req, res, next) {
-  res.render('index', { title: '마이페이지', pageName: 'users/mypage.ejs' });
+  res.render('index', { title: '마이페이지', pageName: 'users/mypage.ejs'});
 });
 
 module.exports = router;

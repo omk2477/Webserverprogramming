@@ -1,46 +1,47 @@
-<style>
-    form span {
-        width:100px;
-    }
-</style>
 <div class="row my-5 justify-content-center">
     <div class="col-6">
         <h1 class="text-center">회원가입</h1>
         <form name="frm" class="card p-3">
             <div class="input-group mb-3">
-                <span class="input-group-text">이메일</span>
-                <input name="email" class="form-control" value="blue@test.com">
+                <span class="input-group-text">E-mail</span>
+                <input name="email" class="form-control" value="test@test.com">
             </div>
             <div class="input-group mb-3">
-                <span class="input-group-text">패스워드</span>
-                <input name="password" class="form-control" type="password" value="Kurly123!@">
+                <span class="input-group-text">Password</span>
+                <input name="password" class="form-control" type="password" value="test1234">
             </div>
             <button class="btn btn-primary w-100">회원가입</button>
         </form>
     </div>
 </div>
 <script type="module">
-    import { app } from '/javascripts/firebaseInit.js';
+    import { app } from "/javascripts/firebaseInit.js";
     import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-auth.js";
+    const auth = getAuth(app);
 
-    const auth = getAuth();
-    $(frm).on("submit", function(e){
+    $(frm).on("submit", function(e) {
         e.preventDefault();
-
+        // Validation Check
         const email=$(frm.email).val();
         const password=$(frm.password).val();
 
-        if (email.includes("@") == false) {
-            alert("이메일 형식으로 입력해주세요.")
-        } else if (password.length < 8) {
-            alert("비밀번호는 8자리이상 입력해주세요!");
+        if(email.includes("@") == false) {
+            alert("올바른 이메일 형식이 아닙니다.");
+        } else if(password.length < 8) {
+            alert("비밀번호는 8자리 이상 입력해주세요.");
         } else {
-            createUserWithEmailAndPassword(auth, email, password).then(success=>{
-                alert("회원가입이 성공했습니다!");
-                location.href="/users/login"
-            }).catch(error=>{
-                alert("이미 등록된 사용자입니다!");
-            })
+            createUserWithEmailAndPassword(auth, email, password)
+                .then((success) => {
+                    // Signed in 
+                    // console.log(success);
+                    alert("회원가입 성공");
+                    location.href("/users/login");
+                })
+                .catch((error) => {
+                    const errorCode = error.code;
+                    const errorMessage = error.message;
+                    alert(errorMessage);
+                });
         }
-    })
+    });
 </script>

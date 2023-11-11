@@ -1,13 +1,13 @@
 var express = require('express');
 var router = express.Router();
 
-/* GET home page. */
+/* 지역검색 */
 router.get('/', function(req, res, next) {
-  res.render('index', { title: 'Express', pageName: 'locals/search.ejs' });
+    res.render('index', { title: '지역검색', pageName:'locals/search.ejs' });
 });
 
-router.get('/favorite', function(req, res){
-  res.render('index', {title: '즐겨찾기', pageName: 'locals/favorite.ejs'})
-})
+router.get('/favorite', function(req, res) {
+    res.render('index', {title: '즐겨찾기', pageName: 'locals/favorite.ejs' });
+});
 
 module.exports = router;
